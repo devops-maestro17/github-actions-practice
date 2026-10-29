@@ -37,7 +37,7 @@ jobs:
             - name: Checkout code
               uses: actions/checkout@v4
             - name: Run Unit Tests
-              run: echo "Running PR-specific validation tests..."
+              run: echo "Running PR-specific validation testsss..."
 
     deploy:
         needs: [ test ]
