@@ -15,11 +15,6 @@ on:
                     - staging
                     - production
 
-.setup_template:
-  checkout: &checkout_step
-    name: Checkout code
-    uses: actions/checkout@v4
-
 jobs: 
     lint:
         runs-on: ubuntu-latest
@@ -28,14 +23,14 @@ jobs:
               env:
                 REPO_NAME: ${{ github.repository }}
               run: echo "Starting Linting for repository $REPO_NAME"
-            - <<: *checkout_step
+            - name: Checkout code
+              uses: actions/checkout@v4
             - name: Run Linting checks
               run: echo "Running Linting checks"
 
     test:
         needs: [ lint ]
         runs-on: ${{ matrix.os }}
-        # This job now ONLY runs on PRs 
         if: github.event_name == 'pull_request'
         strategy:
           fail-fast: false
@@ -49,14 +44,14 @@ jobs:
               - os: macos-latest
                 node: 22 
         steps:
-            - <<: *checkout_step
+            - name: Checkout code
+              uses: actions/checkout@v4
             - name: Run Unit Tests
               run: echo "Running Unit Tests on ${{ matrix.os }} with Node ${{ matrix.node }}..."
 
     deploy:
         needs: [ test ]
         runs-on: ubuntu-latest
-        # Only runs on push or manual trigger
         if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
         steps:
             - name: Deploy
