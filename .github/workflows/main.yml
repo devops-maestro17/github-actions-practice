@@ -15,6 +15,11 @@ on:
                     - staging
                     - production
 
+.setup_template:
+  checkout: &checkout_step
+    name: Checkout code
+    uses: actions/checkout@v4
+
 jobs: 
     lint:
         runs-on: ubuntu-latest
@@ -23,8 +28,7 @@ jobs:
               env:
                 REPO_NAME: ${{ github.repository }}
               run: echo "Starting Linting for repository $REPO_NAME"
-            - name: Checkout code
-              uses: actions/checkout@v4
+            - <<: *checkout_step
             - name: Run Linting checks
               run: echo "Running Linting checks"
 
@@ -45,8 +49,7 @@ jobs:
               - os: macos-latest
                 node: 22 
         steps:
-            - name: Checkout code
-              uses: actions/checkout@v4
+            - <<: *checkout_step
             - name: Run Unit Tests
               run: echo "Running Unit Tests on ${{ matrix.os }} with Node ${{ matrix.node }}..."
 
